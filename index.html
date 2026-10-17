@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#262522">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23d90429'/><text x='50' y='68' font-size='60' text-anchor='middle' fill='%23fff'>♞</text></svg>">
+  <meta name="description" content="Play Mega-Knight Chess online! A thrilling chess variant with a 2x2 crimson neutral Mega Knight, dice rolls, seismic piece crushing, and WebRTC multiplayer.">
+  <title>Mega-Knight Chess | Play Online & Against Smart AI</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@500;700&display=swap" rel="stylesheet">
+
+  <!-- PeerJS for zero-backend WebRTC multiplayer on GitHub Pages -->
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <!-- QRCode.js for mobile camera scan & join -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <!-- Top Navigation & Branding Bar -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand-group">
+        <div class="brand-icon-wrap">
+          <span class="brand-icon">♞</span>
+          <span class="brand-badge">MEGA</span>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">MEGA-KNIGHT <span class="brand-highlight">CHESS</span></span>
+          <span class="brand-subtitle">The Viral Chess Variant</span>
+        </div>
+      </div>
+
+      <div class="topbar-actions">
+        <button id="btn-open-rules" class="btn-topbar" title="Game Rules & Tutorial">
+          <span class="icon">📜</span> <span class="label">Rules</span>
+        </button>
+        <button id="btn-flip-board" class="btn-topbar" title="Flip Board Perspective">
+          <span class="icon">🔄</span> <span class="label">Flip</span>
+        </button>
+        <button id="btn-toggle-sound" class="btn-topbar" title="Toggle Sound">
+          <span class="icon">🔊</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Game Container -->
+  <main class="main-layout">
+    <!-- Left / Center: Chessboard Column -->
+    <section class="board-column">
+      <!-- Opponent Card -->
+      <div class="player-card opponent-card">
+        <div class="player-info">
+          <div class="player-avatar" id="opponent-avatar">🤖</div>
+          <div class="player-meta">
+            <span class="player-name" id="opponent-name">Smart Bot</span>
+            <span class="player-badge" id="opponent-badge">Apex Engine</span>
+          </div>
+        </div>
+        <div class="player-stats">
+          <div class="captured-rack" id="captured-white"></div>
+          <div class="clock" id="black-clock">05:00</div>
+        </div>
+      </div>
+
+      <!-- Live Game Status Banner -->
+      <div class="status-banner" id="status-banner">
+        White's Turn - Move a piece or Roll D6 for Mega Knight!
+      </div>
+
+      <!-- Chessboard Wrapper -->
+      <div class="chessboard-container" id="board-container">
+        <div class="chessboard" id="chessboard">
+          <!-- Dynamic 64 squares, pieces, and 2x2 Mega Knight rendered here -->
+        </div>
+      </div>
+
+      <!-- Self / User Card -->
+      <div class="player-card self-card">
+        <div class="player-info">
+          <div class="player-avatar" id="self-avatar">👤</div>
+          <div class="player-meta">
+            <span class="player-name" id="self-name">You</span>
+            <span class="player-badge">Player</span>
+          </div>
+        </div>
+        <div class="player-stats">
+          <div class="captured-rack" id="captured-black"></div>
+          <div class="clock" id="white-clock">05:00</div>
+        </div>
+      </div>
+
+      <!-- Mobile Quick Action Row (Thumb Friendly) -->
+      <div class="mobile-action-bar">
+        <button id="btn-roll-dice-mobile" class="btn-dice-roll" onclick="document.getElementById('btn-roll-dice').click()">
+          <span class="dice-icon">🎲</span> ROLL D6 (MEGA KNIGHT)
+        </button>
+      </div>
+    </section>
+
+    <!-- Right Column: Control Center & Interactive Dice Panel -->
+    <aside class="sidebar-column">
+      <!-- Mode Selection Tabs -->
+      <div class="mode-tabs">
+        <button class="mode-tab active" data-mode="bot">
+          <span class="icon">🤖</span> Vs AI Bot
+        </button>
+        <button class="mode-tab" data-mode="multiplayer">
+          <span class="icon">🌐</span> Online 1v1
+        </button>
+        <button class="mode-tab" data-mode="pvp_local">
+          <span class="icon">👥</span> Pass & Play
+        </button>
+      </div>
+
+      <!-- Dice Roll Action Zone (Core Mechanic) -->
+      <div class="dice-card">
+        <div class="dice-header">
+          <span class="dice-title">COMMAND THE MEGA KNIGHT</span>
+          <span class="dice-tip">Roll a 6 to activate!</span>
+        </div>
+
+        <div class="dice-arena">
+          <!-- 3D CSS Tumbling Dice -->
+          <div class="dice-scene">
+            <div class="dice-cube" id="dice-cube">
+              <!-- Face 1: Front -->
+              <div class="dice-face face-1">
+                <div class="pip center"></div>
+              </div>
+              <!-- Face 2: Bottom -->
+              <div class="dice-face face-2">
+                <div class="pip top-left"></div>
+                <div class="pip bottom-right"></div>
+              </div>
+              <!-- Face 3: Right -->
+              <div class="dice-face face-3">
+                <div class="pip top-left"></div>
+                <div class="pip center"></div>
+                <div class="pip bottom-right"></div>
+              </div>
+              <!-- Face 4: Left -->
+              <div class="dice-face face-4">
+                <div class="pip top-left"></div>
+                <div class="pip top-right"></div>
+                <div class="pip bottom-left"></div>
+                <div class="pip bottom-right"></div>
+              </div>
+              <!-- Face 5: Top -->
+              <div class="dice-face face-5">
+                <div class="pip top-left"></div>
+                <div class="pip top-right"></div>
+                <div class="pip center"></div>
+                <div class="pip bottom-left"></div>
+                <div class="pip bottom-right"></div>
+              </div>
+              <!-- Face 6: Back (Jackpot!) -->
+              <div class="dice-face face-6">
+                <div class="pip top-left"></div>
+                <div class="pip top-right"></div>
+                <div class="pip mid-left"></div>
+                <div class="pip mid-right"></div>
+                <div class="pip bottom-left"></div>
+                <div class="pip bottom-right"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button id="btn-roll-dice" class="btn-dice-roll">
+          <span class="dice-icon">🎲</span> ROLL D6 (MEGA KNIGHT)
+        </button>
+        <p class="dice-subtext">Roll 6: Leap & CRUSH pieces! | 1-5: Turn ends</p>
+      </div>
+
+      <!-- Mode Options (Bot Difficulty / Clocks) -->
+      <div class="settings-card">
+        <div id="bot-controls-panel" class="settings-group">
+          <label for="bot-difficulty-select">Bot Difficulty:</label>
+          <select id="bot-difficulty-select" class="custom-select">
+            <option value="squire">Squire (Casual ~1000 ELO)</option>
+            <option value="commander">Knight Commander (Tactical ~1600 ELO)</option>
+            <option value="apex" selected>Apex Grandmaster (Hard ~2200 ELO)</option>
+          </select>
+        </div>
+
+        <div class="settings-group">
+          <label for="time-control-select">Timer Clock:</label>
+          <select id="time-control-select" class="custom-select">
+            <option value="60">1 min (Bullet)</option>
+            <option value="180">3 min (Blitz)</option>
+            <option value="300" selected>5 min (Rapid)</option>
+            <option value="600">10 min</option>
+            <option value="0">Unlimited (Casual)</option>
+          </select>
+        </div>
+
+        <div id="multiplayer-controls-panel" class="settings-group" style="display: none;">
+          <span id="multiplayer-status-pill" class="status-pill status-disconnected">Disconnected</span>
+          <button id="btn-reopen-mp-modal" class="btn-secondary" onclick="window.app.openMultiplayerModal()">
+            Room Settings & QR Code
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Move History Log -->
+      <div class="history-card">
+        <div class="card-header">
+          <span>Move History</span>
+          <span class="badge">Live</span>
+        </div>
+        <div class="move-history-list" id="move-history-list">
+          <!-- Dynamic move list -->
+        </div>
+      </div>
+
+      <!-- Live Reactions & Quick Chat -->
+      <div class="reactions-card">
+        <div class="reaction-buttons">
+          <button class="reaction-btn" data-emoji="🔥" title="Fire">🔥</button>
+          <button class="reaction-btn" data-emoji="😱" title="Shocked">😱</button>
+          <button class="reaction-btn" data-emoji="🎲" title="Dice">🎲</button>
+          <button class="reaction-btn" data-emoji="👑" title="King">👑</button>
+          <button class="reaction-btn" data-emoji="💥" title="Crush!">💥</button>
+          <button class="reaction-btn" data-emoji="👏" title="Applause">👏</button>
+        </div>
+        <div class="chat-box">
+          <div class="chat-messages" id="chat-messages-log"></div>
+          <div class="chat-input-row">
+            <input type="text" id="chat-input" placeholder="Type a message..." maxlength="100">
+            <button id="btn-send-chat" class="btn-send">Send</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- ================= MODALS ================= -->
+
+  <!-- 1. Multiplayer Room Modal (WebRTC PeerJS & QR) -->
+  <div class="modal-overlay" id="multiplayer-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>🌐 Online Multiplayer (Peer-to-Peer)</h2>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">Play in real-time on GitHub Pages! Direct WebRTC peer connection with zero lag and no login required.</p>
+
+        <!-- Option A: Host a New Room -->
+        <div class="mp-box">
+          <h3>Create a Match</h3>
+          <div class="input-row">
+            <label>Play as:</label>
+            <select id="host-color-choice" class="custom-select">
+              <option value="w">White (Moves First)</option>
+              <option value="b">Black</option>
+              <option value="random">Random</option>
+            </select>
+            <button id="btn-create-room" class="btn-primary">Create Room</button>
+          </div>
+
+          <!-- Active Room Code & QR -->
+          <div id="room-active-info" class="room-active-info" style="display: none;">
+            <div class="room-code-display">
+              <span class="label">Room Code:</span>
+              <span class="code" id="display-room-code">MK-???</span>
+            </div>
+
+            <div class="qr-wrapper">
+              <div id="room-qr-code"></div>
+              <p class="qr-hint">Scan with phone camera to instantly join!</p>
+            </div>
+
+            <div class="share-actions">
+              <button id="btn-copy-invite" class="btn-secondary">📋 Copy Invite Link</button>
+              <button id="btn-share-invite" class="btn-primary">📲 Share via WhatsApp / SMS</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"><span>OR</span></div>
+
+        <!-- Option B: Join Existing Room -->
+        <div class="mp-box">
+          <h3>Join Friend's Room</h3>
+          <div class="input-row">
+            <input type="text" id="join-room-input" placeholder="e.g. MK-742" maxlength="10">
+            <button id="btn-join-room" class="btn-primary">Join Room</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Game Over Modal -->
+  <div class="modal-overlay" id="game-over-modal">
+    <div class="modal-card modal-game-over">
+      <div class="modal-header">
+        <h2 class="modal-title">Game Over</h2>
+      </div>
+      <div class="modal-body">
+        <p class="modal-reason"></p>
+        <div class="modal-actions">
+          <button id="btn-rematch" class="btn-primary btn-large">🔄 Rematch</button>
+          <button class="btn-secondary modal-close-btn">Review Board</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Promotion Modal -->
+  <div class="modal-overlay" id="promotion-modal">
+    <div class="modal-card modal-promo">
+      <div class="modal-header">
+        <h2>Pawn Promotion</h2>
+      </div>
+      <div class="modal-body">
+        <p class="promo-hint">Tip: Promoting to Knight helps summon a Mega Knight!</p>
+        <div class="promo-options">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Rules & Tutorial Modal (Direct Reel Reference) -->
+  <div class="modal-overlay" id="rules-modal">
+    <div class="modal-card modal-rules">
+      <div class="modal-header">
+        <h2>📜 Mega-Knight Chess Rules</h2>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="rule-section">
+          <h3>1. The 2x2 Mega Knight</h3>
+          <p>A massive, neutral crimson Mega Knight occupies the <strong>center four squares</strong> (d4, d5, e4, e5). It is neutral and can be moved by either player!</p>
+        </div>
+
+        <div class="rule-section">
+          <h3>2. Turn Structure & The D6 Dice</h3>
+          <p>At the start of your turn, you have two options:</p>
+          <ul>
+            <li><strong>Make a standard chess move</strong> with one of your pieces, OR</li>
+            <li><strong>Roll the D6</strong> to command the Mega Knight.</li>
+          </ul>
+          <p>To move the Mega Knight, <strong>you must roll a 6</strong>! If you roll 1-5, your turn ends immediately.</p>
+        </div>
+
+        <div class="rule-section">
+          <h3>3. Vertex Movement & Crushing</h3>
+          <p>The Mega Knight travels along the <strong>vertices (grid intersections)</strong>. It moves in an <strong>L-shape</strong>: 2 vertices along a grid line, then 1 vertex perpendicular!</p>
+          <p>When the Mega Knight lands, <strong>any pieces occupying the 4 squares are crushed and permanently removed from the board!</strong></p>
+          <p>⚠️ <strong>Crushmate:</strong> This is true even for Kings! Crushing the enemy King results in an <strong>instant checkmate victory!</strong></p>
+        </div>
+
+        <div class="rule-section">
+          <h3>4. Instant Mega Knight Summoning</h3>
+          <p>If <strong>four knights</strong> (White, Black, or collaborating!) occupy 4 squares in a 2x2 square pattern through promotion or maneuvers, <strong>another Mega Knight will form instantaneously on the board!</strong> There is no limit to how many Mega Knights can form!</p>
+        </div>
+
+        <div class="rule-credits">
+          <p><em>Game concept developed by Bardelo Bardalini. Web edition engineered for desktop & mobile devices.</em></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/engine.js"></script>
+  <script src="js/ai.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/pieces-svg.js"></script>
+  <script src="js/multiplayer.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
