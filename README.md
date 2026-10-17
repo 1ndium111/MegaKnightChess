@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/banner.svg" alt="Mega-Knight Chess Banner" width="100%">
+</p>
+
 # ♞ Mega-Knight Chess
 
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live%20Play-81b64c?style=for-the-badge&logo=github)](https://hammadshakeelai.github.io/Mega-Knight-Chess/)
@@ -38,11 +42,15 @@ At the beginning of your turn, you have two mutually exclusive options:
    - **Roll 1, 2, 3, 4, or 5**: Turn ends immediately. Play passes to your opponent.
    - **Roll 6**: You command the Mega Knight to jump!
 
-### 3. Mega Knight Movement
-- Moves along the internal grid vertices $(vx, vy)$ where $1 \le vx \le 7$ and $1 \le vy \le 7$.
-- Moves in an L-shape: 2 vertices in one orthogonal direction, then 1 vertex perpendicular.
-- When it lands, **all pieces under its 4 squares are crushed**!
-- If a King is crushed, the player who made the move wins instantly by **Crushmate**!
+### 3. Mega Knight Movement & Seismic Crushing
+
+<p align="center">
+  <img src="assets/how-to-crush.svg" alt="Animated Demonstration: Roll 6 and Mega Knight Crushes Pieces" width="100%">
+</p>
+
+- **Vertex L-Hop**: Moves along the internal grid intersections $(vx, vy)$ where $1 \le vx \le 7$ and $1 \le vy \le 7$ (2 vertices in one orthogonal direction, then 1 vertex perpendicular).
+- **Seismic 4-Square Crush**: When it lands, **all pieces under its 4 squares are crushed and permanently removed from the game**!
+- **👑 Crushmate**: If an enemy King is crushed under the 2×2 landing zone, the player who made the move wins instantly!
 
 ### 4. 4-Knight Summon
 - Whenever 4 knights occupy a 2×2 square pattern (e.g., $(vx-1, vy-1), (vx-1, vy), (vx, vy-1), (vx, vy)$ are all knights), they instantaneously combine to spawn an additional Mega Knight!

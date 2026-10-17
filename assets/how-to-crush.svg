@@ -1,0 +1,725 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" width="960" height="540">
+  <defs>
+    <!-- Background & Container Gradients -->
+    <radialGradient id="vBgGlow" cx="50%" cy="45%" r="75%">
+      <stop offset="0%" stop-color="#241d1a" />
+      <stop offset="60%" stop-color="#141110" />
+      <stop offset="100%" stop-color="#0a0908" />
+    </radialGradient>
+
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#26211e" />
+      <stop offset="100%" stop-color="#181513" />
+    </linearGradient>
+
+    <linearGradient id="goldPulse" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff3b0" />
+      <stop offset="50%" stop-color="#ffb703" />
+      <stop offset="100%" stop-color="#fb8500" />
+    </linearGradient>
+
+    <!-- Dice Gradients -->
+    <linearGradient id="diceBody" x1="15%" y1="15%" x2="85%" y2="85%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="45%" stop-color="#f0ece6" />
+      <stop offset="85%" stop-color="#d6cebe" />
+      <stop offset="100%" stop-color="#b8ad96" />
+    </linearGradient>
+
+    <radialGradient id="pipGlow" cx="35%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#ff4b5c" />
+      <stop offset="60%" stop-color="#d90429" />
+      <stop offset="100%" stop-color="#6a040f" />
+    </radialGradient>
+
+    <!-- Drop Shadows & Glow Filters -->
+    <filter id="vDropShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000000" flood-opacity="0.65" />
+    </filter>
+
+    <filter id="vNeonGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="5" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <filter id="vRedGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="7" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Trajectory Arrow Marker -->
+    <marker id="vArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#ffb703" />
+    </marker>
+
+    <!-- CSS Keyframe Animations -->
+    <style>
+      /* Timeline: 8.0s Infinite Loop */
+
+      /* 1. Rec indicator pulsing dot */
+      .rec-dot {
+        animation: recBlink 1.2s infinite ease-in-out;
+      }
+      @keyframes recBlink {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.3; transform: scale(0.85); }
+      }
+
+      /* 2. D6 Dice Roll Animation */
+      .dice-group {
+        transform-origin: 140px 145px;
+        animation: diceTumble 8s infinite cubic-bezier(0.25, 1, 0.5, 1);
+      }
+      @keyframes diceTumble {
+        0% { transform: translate(0, -25px) rotate(-140deg) scale(0.8); }
+        8% { transform: translate(0, 15px) rotate(180deg) scale(1.1); }
+        14% { transform: translate(0, -6px) rotate(340deg) scale(0.95); }
+        18% { transform: translate(0, 0px) rotate(360deg) scale(1.0); }
+        86% { transform: translate(0, 0px) rotate(360deg) scale(1.0); opacity: 1; }
+        92% { transform: translate(0, 0px) scale(0.95); opacity: 0.6; }
+        100% { transform: translate(0, -25px) rotate(-140deg) scale(0.8); opacity: 1; }
+      }
+
+      /* 3. Dice Face Switch (Shows 6 on roll completion) */
+      .dice-pips-6 {
+        animation: diceFace6 8s infinite;
+      }
+      @keyframes diceFace6 {
+        0%, 12% { opacity: 0.2; }
+        16%, 88% { opacity: 1; }
+        94%, 100% { opacity: 0.2; }
+      }
+
+      /* 4. Dice Gold Aura Flare */
+      .dice-aura {
+        transform-origin: 140px 145px;
+        animation: auraBurst 8s infinite;
+      }
+      @keyframes auraBurst {
+        0%, 15% { opacity: 0; transform: scale(0.4); }
+        18% { opacity: 0.9; transform: scale(1.0); }
+        28% { opacity: 0; transform: scale(1.7); }
+        100% { opacity: 0; }
+      }
+
+      /* 5. Trajectory Neon L-Path */
+      .anim-trajectory {
+        stroke-dasharray: 450;
+        animation: drawLPath 8s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      @keyframes drawLPath {
+        0%, 20% { stroke-dashoffset: 450; opacity: 0; }
+        22% { opacity: 1; }
+        35% { stroke-dashoffset: 0; opacity: 1; }
+        44% { stroke-dashoffset: 0; opacity: 1; }
+        48%, 100% { stroke-dashoffset: 0; opacity: 0; }
+      }
+
+      /* 6. Landing Zone Danger Target */
+      .anim-danger-zone {
+        animation: dangerPulse 8s infinite ease-in-out;
+      }
+      @keyframes dangerPulse {
+        0%, 22% { opacity: 0; transform: scale(0.96); }
+        26% { opacity: 0.8; transform: scale(1.0); }
+        34% { opacity: 0.5; }
+        42% { opacity: 0.95; }
+        46% { opacity: 1; }
+        50%, 100% { opacity: 0; }
+      }
+
+      /* 7. Mega Knight Leap */
+      .anim-mega-knight {
+        animation: mkLeap 8s infinite cubic-bezier(0.2, 0.8, 0.3, 1);
+      }
+      @keyframes mkLeap {
+        0%, 35% { transform: translate(0px, 0px) scale(1); }
+        37% { transform: translate(0px, 6px) scale(1.03, 0.95); }
+        41% { transform: translate(44px, -145px) scale(1.22); }
+        45% { transform: translate(88px, -176px) scale(0.92, 1.08); }
+        47% { transform: translate(88px, -176px) scale(1.0); }
+        86% { transform: translate(88px, -176px) scale(1.0); opacity: 1; }
+        92% { opacity: 0.3; }
+        96%, 100% { transform: translate(0px, 0px) scale(1); opacity: 1; }
+      }
+
+      /* 8. Mega Knight Shadow */
+      .anim-mk-shadow {
+        animation: mkShadowMove 8s infinite cubic-bezier(0.2, 0.8, 0.3, 1);
+      }
+      @keyframes mkShadowMove {
+        0%, 35% { transform: translate(0px, 0px) scale(1); opacity: 0.6; }
+        41% { transform: translate(44px, -88px) scale(0.65); opacity: 0.2; }
+        45% { transform: translate(88px, -176px) scale(1.2); opacity: 0.85; }
+        47%, 86% { transform: translate(88px, -176px) scale(1); opacity: 0.6; }
+        92% { opacity: 0.2; }
+        96%, 100% { transform: translate(0px, 0px) scale(1); opacity: 0.6; }
+      }
+
+      /* 9. Seismic Impact Shockwaves */
+      .shockwave-ring-1 {
+        transform-origin: 684px 148px;
+        animation: ring1 8s infinite cubic-bezier(0.1, 0.7, 0.2, 1);
+      }
+      @keyframes ring1 {
+        0%, 44% { opacity: 0; transform: scale(0.05); }
+        45% { opacity: 1; transform: scale(0.15); stroke-width: 8; }
+        58% { opacity: 0; transform: scale(2.2); stroke-width: 1; }
+        100% { opacity: 0; }
+      }
+
+      .shockwave-ring-2 {
+        transform-origin: 684px 148px;
+        animation: ring2 8s infinite cubic-bezier(0.1, 0.7, 0.2, 1);
+      }
+      @keyframes ring2 {
+        0%, 46% { opacity: 0; transform: scale(0.05); }
+        47% { opacity: 0.85; transform: scale(0.2); stroke-width: 6; }
+        62% { opacity: 0; transform: scale(2.8); stroke-width: 1; }
+        100% { opacity: 0; }
+      }
+
+      /* 10. Board Screen Shake */
+      .anim-board {
+        animation: boardShake 8s infinite;
+      }
+      @keyframes boardShake {
+        0%, 44% { transform: translate(0, 0); }
+        45% { transform: translate(3px, -3px); }
+        46% { transform: translate(-3px, 2px); }
+        47% { transform: translate(2px, -2px); }
+        48% { transform: translate(-1px, 1px); }
+        49%, 100% { transform: translate(0, 0); }
+      }
+
+      /* 11. Crushed Pieces Disintegration */
+      .anim-crushed-piece {
+        transform-origin: center;
+        animation: pieceCrush 8s infinite ease-out;
+      }
+      @keyframes pieceCrush {
+        0%, 44% { opacity: 1; transform: scale(1); filter: none; }
+        45% { opacity: 1; transform: scale(1.15) rotate(5deg); filter: brightness(3) drop-shadow(0 0 10px #ff4b5c); }
+        47% { opacity: 0.8; transform: scale(0.7) rotate(-15deg); filter: drop-shadow(0 0 15px #d90429); }
+        51% { opacity: 0; transform: scale(0.2) translateY(20px); }
+        88% { opacity: 0; }
+        94%, 100% { opacity: 1; transform: scale(1); filter: none; }
+      }
+
+      /* 12. Splash Text "CRUSHED!" */
+      .anim-splash {
+        transform-origin: 684px 148px;
+        animation: splashPop 8s infinite cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+      @keyframes splashPop {
+        0%, 44% { opacity: 0; transform: scale(0.3) translateY(25px); }
+        46% { opacity: 1; transform: scale(1.15) translateY(-5px); }
+        49% { opacity: 1; transform: scale(1.0) translateY(0); }
+        76% { opacity: 1; transform: scale(1.0) translateY(0); }
+        82% { opacity: 0; transform: scale(0.85) translateY(-15px); }
+        100% { opacity: 0; }
+      }
+
+      /* 13. Step Badge Activations */
+      .step-1-card { animation: card1Lit 8s infinite; }
+      @keyframes card1Lit {
+        0%, 18% { border-color: #ffb703; box-shadow: 0 0 12px rgba(255,183,3,0.3); }
+        22%, 100% { border-color: #38322c; }
+      }
+
+      .step-2-card { animation: card2Lit 8s infinite; }
+      @keyframes card2Lit {
+        0%, 18% { border-color: #38322c; }
+        22%, 44% { border-color: #ffb703; }
+        48%, 100% { border-color: #38322c; }
+      }
+
+      .step-3-card { animation: card3Lit 8s infinite; }
+      @keyframes card3Lit {
+        0%, 44% { border-color: #38322c; }
+        46%, 86% { border-color: #ff4b5c; }
+        90%, 100% { border-color: #38322c; }
+      }
+    </style>
+  </defs>
+
+  <!-- Canvas Deep obsidian background -->
+  <rect width="960" height="540" rx="16" fill="url(#vBgGlow)" stroke="#38322c" stroke-width="2" />
+
+  <!-- ========================================== -->
+  <!-- TOP HEADER / ACTION HUD BAR               -->
+  <!-- ========================================== -->
+  <g transform="translate(0, 0)">
+    <rect x="0" y="0" width="960" height="48" rx="16" fill="#141110" />
+    <line x1="0" y1="48" x2="960" y2="48" stroke="#2d2723" stroke-width="1.5" />
+
+    <!-- Pulsing Live Rec Dot -->
+    <circle class="rec-dot" cx="32" cy="24" r="5.5" fill="#ff4b5c" />
+    <circle class="rec-dot" cx="32" cy="24" r="9" stroke="#ff4b5c" stroke-width="1.5" fill="none" opacity="0.6" />
+
+    <text x="50" y="29" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="800" letter-spacing="1.2">
+      GAMEPLAY REEL: THE D6 CRUSH MECHANIC
+    </text>
+
+    <!-- Center Mode Badge -->
+    <g transform="translate(430, 12)">
+      <rect x="0" y="0" width="168" height="24" rx="12" fill="#26201c" stroke="#423933" stroke-width="1" />
+      <text x="84" y="16.5" fill="#ffb703" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" text-anchor="middle" letter-spacing="1">
+        ★ VERTEX L-HOP ★
+      </text>
+    </g>
+
+    <!-- Right timecode -->
+    <text x="925" y="29" fill="#88817a" font-family="monospace" font-size="12" font-weight="600" text-anchor="end">
+      00:00:08 [60 FPS]
+    </text>
+  </g>
+
+  <!-- ========================================== -->
+  <!-- LEFT SIDEBAR: 3-STEP TUTORIAL CARDS        -->
+  <!-- ========================================== -->
+  <g transform="translate(24, 60)">
+    
+    <!-- STEP 1: ROLL D6 (Card) -->
+    <g class="step-1-card">
+      <rect x="0" y="0" width="280" height="136" rx="12" fill="url(#cardGrad)" stroke="#ffb703" stroke-width="1.5" filter="url(#vDropShadow)" />
+      
+      <!-- Step 1 Badge -->
+      <rect x="14" y="12" width="76" height="20" rx="4" fill="#ffb703" />
+      <text x="52" y="26" fill="#1c1616" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10.5" font-weight="900" text-anchor="middle" letter-spacing="0.8">
+        STEP 1
+      </text>
+      
+      <text x="98" y="27" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="800">
+        Roll D6 on Your Turn
+      </text>
+
+      <!-- D6 Dice Canvas Area -->
+      <g transform="translate(14, 42)">
+        <!-- Dice Shadow Base -->
+        <ellipse cx="60" cy="74" rx="36" ry="7" fill="#000000" opacity="0.5" />
+        
+        <!-- Expanding Gold Aura Ring on 6 -->
+        <circle class="dice-aura" cx="60" cy="40" r="38" stroke="#ffb703" stroke-width="3" fill="none" opacity="0" filter="url(#vNeonGlow)" />
+
+        <!-- 3D Perspective D6 Die -->
+        <g class="dice-group" transform="translate(-80, -105)">
+          <!-- Die Cube (Ivory with rounded corners) -->
+          <rect x="110" y="115" width="60" height="60" rx="14" fill="url(#diceBody)" stroke="#8c8270" stroke-width="1.8" filter="url(#vDropShadow)" />
+          
+          <!-- Inner Bevel Highlight -->
+          <rect x="112" y="117" width="56" height="56" rx="12" fill="none" stroke="#ffffff" stroke-width="1.2" opacity="0.8" />
+
+          <!-- PIPS: FACE 6 (2 columns of 3 ruby pips) -->
+          <g class="dice-pips-6">
+            <!-- Left Column -->
+            <circle cx="125" cy="129" r="4.2" fill="url(#pipGlow)" />
+            <circle cx="125" cy="145" r="4.2" fill="url(#pipGlow)" />
+            <circle cx="125" cy="161" r="4.2" fill="url(#pipGlow)" />
+            <!-- Right Column -->
+            <circle cx="155" cy="129" r="4.2" fill="url(#pipGlow)" />
+            <circle cx="155" cy="145" r="4.2" fill="url(#pipGlow)" />
+            <circle cx="155" cy="161" r="4.2" fill="url(#pipGlow)" />
+          </g>
+        </g>
+
+        <!-- Dice Callout Text -->
+        <text x="135" y="44" fill="#ffb703" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="900">
+          6 ROLLED!
+        </text>
+        <text x="135" y="62" fill="#d4cfc9" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="600">
+          Roll 6 = Mega Knight acts!
+        </text>
+        <text x="135" y="78" fill="#88817a" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10.5">
+          (Roll 1–5 ends your turn)
+        </text>
+      </g>
+    </g>
+
+    <!-- STEP 2: VERTEX L-JUMP (Card) -->
+    <g class="step-2-card" transform="translate(0, 148)">
+      <rect x="0" y="0" width="280" height="122" rx="12" fill="url(#cardGrad)" stroke="#38322c" stroke-width="1.5" filter="url(#vDropShadow)" />
+      
+      <!-- Step 2 Badge -->
+      <rect x="14" y="12" width="76" height="20" rx="4" fill="#38322c" />
+      <text x="52" y="26" fill="#e0dacb" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10.5" font-weight="900" text-anchor="middle" letter-spacing="0.8">
+        STEP 2
+      </text>
+
+      <text x="98" y="27" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="800">
+        Vertex L-Shape Jump
+      </text>
+
+      <!-- Description -->
+      <text x="16" y="54" fill="#d4cfc9" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11.5" font-weight="600">
+        • Moves along internal grid intersections
+      </text>
+      <text x="16" y="73" fill="#ffb703" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11.5" font-weight="700">
+        • 2 vertices orthogonal + 1 perpendicular
+      </text>
+      <text x="16" y="93" fill="#88817a" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11">
+        • Jumps clean over standard pieces
+      </text>
+      <text x="16" y="110" fill="#88817a" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11">
+        • Trajectory: Vertex (4,4) ➔ (5,6)
+      </text>
+    </g>
+
+    <!-- STEP 3: 4-SQUARE CRUSH (Card) -->
+    <g class="step-3-card" transform="translate(0, 282)">
+      <rect x="0" y="0" width="280" height="152" rx="12" fill="url(#cardGrad)" stroke="#38322c" stroke-width="1.5" filter="url(#vDropShadow)" />
+      
+      <!-- Step 3 Badge -->
+      <rect x="14" y="12" width="76" height="20" rx="4" fill="#ff4b5c" />
+      <text x="52" y="26" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10.5" font-weight="900" text-anchor="middle" letter-spacing="0.8">
+        STEP 3
+      </text>
+
+      <text x="98" y="27" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="800">
+        Seismic Impact Crush
+      </text>
+
+      <!-- Description -->
+      <text x="16" y="55" fill="#ff4b5c" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="800">
+        💥 4 Squares Obliterated!
+      </text>
+      <text x="16" y="75" fill="#d4cfc9" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11.5" font-weight="600">
+        All pieces under landing zone crushed
+      </text>
+      <text x="16" y="94" fill="#d4cfc9" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11.5" font-weight="600">
+        and permanently removed from play.
+      </text>
+      
+      <!-- Highlight box for King crush -->
+      <rect x="14" y="106" width="252" height="34" rx="6" fill="#3b0910" stroke="#ff4b5c" stroke-width="1" />
+      <text x="140" y="127" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11.5" font-weight="800" text-anchor="middle">
+        👑 Crush King = INSTANT CRUSHMATE!
+      </text>
+    </g>
+
+  </g>
+
+  <!-- ========================================== -->
+  <!-- RIGHT ARENA: 5x5 CHESSBOARD DISPLAY        -->
+  <!-- ========================================== -->
+  <g class="anim-board" transform="translate(420, 60)">
+    
+    <!-- Outer Board Border Frame -->
+    <rect x="-8" y="-8" width="456" height="456" rx="10" fill="#241e1b" stroke="#4a3e36" stroke-width="2.5" filter="url(#vDropShadow)" />
+
+    <!-- 5x5 Grid Squares (files c..g, ranks 3..7) -->
+    <!-- Rank 7 (y = 0..88) -->
+    <rect x="0"   y="0" width="88" height="88" fill="#ebecd0" />
+    <rect x="88"  y="0" width="88" height="88" fill="#739552" />
+    <rect x="176" y="0" width="88" height="88" fill="#ebecd0" />
+    <rect x="264" y="0" width="88" height="88" fill="#739552" />
+    <rect x="352" y="0" width="88" height="88" fill="#ebecd0" />
+
+    <!-- Rank 6 (y = 88..176) -->
+    <rect x="0"   y="88" width="88" height="88" fill="#739552" />
+    <rect x="88"  y="88" width="88" height="88" fill="#ebecd0" />
+    <rect x="176" y="88" width="88" height="88" fill="#739552" />
+    <rect x="264" y="88" width="88" height="88" fill="#ebecd0" />
+    <rect x="352" y="88" width="88" height="88" fill="#739552" />
+
+    <!-- Rank 5 (y = 176..264) -->
+    <rect x="0"   y="176" width="88" height="88" fill="#ebecd0" />
+    <rect x="88"  y="176" width="88" height="88" fill="#739552" />
+    <rect x="176" y="176" width="88" height="88" fill="#ebecd0" />
+    <rect x="264" y="176" width="88" height="88" fill="#739552" />
+    <rect x="352" y="176" width="88" height="88" fill="#ebecd0" />
+
+    <!-- Rank 4 (y = 264..352) -->
+    <rect x="0"   y="264" width="88" height="88" fill="#739552" />
+    <rect x="88"  y="264" width="88" height="88" fill="#ebecd0" />
+    <rect x="176" y="264" width="88" height="88" fill="#739552" />
+    <rect x="264" y="264" width="88" height="88" fill="#ebecd0" />
+    <rect x="352" y="264" width="88" height="88" fill="#739552" />
+
+    <!-- Rank 3 (y = 352..440) -->
+    <rect x="0"   y="352" width="88" height="88" fill="#ebecd0" />
+    <rect x="88"  y="352" width="88" height="88" fill="#739552" />
+    <rect x="176" y="352" width="88" height="88" fill="#ebecd0" />
+    <rect x="264" y="352" width="88" height="88" fill="#739552" />
+    <rect x="352" y="352" width="88" height="88" fill="#ebecd0" />
+
+    <!-- Coordinate Annotations -->
+    <!-- Files c, d, e, f, g -->
+    <g fill="#a19a92" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700">
+      <text x="6"   y="434">c</text>
+      <text x="94"  y="434">d</text>
+      <text x="182" y="434">e</text>
+      <text x="270" y="434">f</text>
+      <text x="358" y="434">g</text>
+
+      <text x="6" y="16">7</text>
+      <text x="6" y="104">6</text>
+      <text x="6" y="192">5</text>
+      <text x="6" y="280">4</text>
+      <text x="6" y="368">3</text>
+    </g>
+
+    <!-- Vertex Grid Dots (At all square intersections) -->
+    <g fill="#ffffff" opacity="0.45">
+      <circle cx="88"  cy="88"  r="2.5" />
+      <circle cx="176" cy="88"  r="2.5" />
+      <circle cx="264" cy="88"  r="2.5" />
+      <circle cx="352" cy="88"  r="2.5" />
+
+      <circle cx="88"  cy="176" r="2.5" />
+      <circle cx="176" cy="176" r="2.5" />
+      <circle cx="264" cy="176" r="2.5" />
+      <circle cx="352" cy="176" r="2.5" />
+
+      <circle cx="88"  cy="264" r="2.5" />
+      <circle cx="176" cy="264" r="2.5" />
+      <circle cx="264" cy="264" r="2.5" />
+      <circle cx="352" cy="264" r="2.5" />
+
+      <circle cx="88"  cy="352" r="2.5" />
+      <circle cx="176" cy="352" r="2.5" />
+      <circle cx="264" cy="352" r="2.5" />
+      <circle cx="352" cy="352" r="2.5" />
+    </g>
+
+    <!-- ========================================== -->
+    <!-- TARGET LANDING DANGER ZONE (e6, e7, f6, f7) -->
+    <!-- ========================================== -->
+    <!-- Bounding box: x = 176 to 352 (width 176), y = 0 to 176 (height 176) -->
+    <g class="anim-danger-zone">
+      <rect x="176" y="0" width="176" height="176" rx="6" fill="#ff4b5c" fill-opacity="0.25" stroke="#ff4b5c" stroke-width="2.5" stroke-dasharray="8,5" />
+      
+      <!-- Warning Crosshairs on the 4 Squares -->
+      <line x1="264" y1="0" x2="264" y2="176" stroke="#ff4b5c" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.6" />
+      <line x1="176" y1="88" x2="352" y2="88" stroke="#ff4b5c" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.6" />
+
+      <!-- Corner Danger Brackets -->
+      <path d="M 184 14 L 184 6 L 192 6" stroke="#ff4b5c" stroke-width="3" fill="none" />
+      <path d="M 344 14 L 344 6 L 336 6" stroke="#ff4b5c" stroke-width="3" fill="none" />
+      <path d="M 184 162 L 184 170 L 192 170" stroke="#ff4b5c" stroke-width="3" fill="none" />
+      <path d="M 344 162 L 344 170 L 336 170" stroke="#ff4b5c" stroke-width="3" fill="none" />
+
+      <!-- Center Target Label -->
+      <rect x="200" y="74" width="128" height="28" rx="6" fill="#140205" stroke="#ff4b5c" stroke-width="1.5" />
+      <text x="264" y="93" fill="#ff4b5c" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11.5" font-weight="900" text-anchor="middle" letter-spacing="1">
+        ⚠ CRUSH ZONE ⚠
+      </text>
+    </g>
+
+    <!-- ========================================== -->
+    <!-- TARGET ENEMY PIECES (Sitting on f6 and e7)  -->
+    <!-- ========================================== -->
+    <!-- Black Knight 'n' on f6 (x: 264..352, y: 88..176) -->
+    <g class="anim-crushed-piece" transform="translate(264, 88)">
+      <g transform="translate(19, 19) scale(1.0)">
+        <g transform="matrix(.96825791 0 0 .96825791 330.54075 -133.914)"><g transform="translate(.201144 -51.448672)"><g transform="matrix(1.084117 0 0 1.084117 27.965887 -17.438385)"><path d="m-327.43212 207.28694-4.3739 4.42164c.0915 2.78308.24097 3.56955 1.5674 5.27488 4.1359-2.68691 1.20222 2.64429 4.67029-.077.20054-2.24145 3.17306-2.68139 5.12089-3.63471 7.94975 2.3048.66824 2.52746-3.24438 8.93733-1.12218 1.76912-1.05026 3.88601-1.29949 5.91276l19.55756-.13002v-1.23454l-.71474-1.49442c-1.2489-3.63277.32554-8.49484.15828-14.92228-1.80786-6.26199-4.28669-9.71933-10.41992-9.40673.17372-1.85927-.0103-7.37521-4.35439-1.2228-.6845 4.78941-5.91326.91212-6.66762 7.57584z" fill="#575452" stroke="#000" stroke-width="1.227104"/><path d="m-321.42982 206.20344c-.40342.63291-2.37309.32339-2.3825-.008-.0413-1.33683 2.88117-1.54992 2.90076-1.29477"/></g><path d="m-325.49479 229.18739c-1.32253 0-2.38723.80903-2.38723 1.81396.001 1.80313-.00028 3.70465 0 5.35334h28.19343c-.0001-1.97368 0-3.49579 0-5.35334 0-1.00493-1.06472-1.81396-2.38723-1.81396z" fill="#575452" stroke="#000" stroke-linecap="square" stroke-width="1.193501"/><path d="m-329.26454 213.05813c.5563.10473 1.40256-1.13834 1.22498-1.3147-.71394-.71263-2.33937.78481-2.20915.92726"/><path d="m-327.68389 216.9422c.40748-.6395.7247-1.31777 1.62551-1.74538" fill="none" stroke="#000" stroke-width="1.286158"/></g><g fill="#464342" fill-rule="evenodd"><path d="m-315.46752 149.74946c12.84569 9.7014 8.31786 13.64505 2.77812 27.41745l9.07851.00005-.74413-1.88515c-.99535-3.76758.22946-10.75707.17104-15.87639-1.95249-8.16122-6.21828-10.61512-11.40047-9.72607z"/><path d="m-316.49321 145.35365c.42725 1.52104.74171 2.83382.91206 4.31473.46215-1.65516-.0641-5.26851-.91206-4.31473z"/></g></g>
+      </g>
+      <!-- Piece coordinate tag -->
+      <text x="44" y="80" fill="#333333" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" font-weight="800" text-anchor="middle" opacity="0.6">f6</text>
+    </g>
+
+    <!-- Black Pawn 'p' on e7 (x: 176..264, y: 0..88) -->
+    <g class="anim-crushed-piece" transform="translate(176, 0)">
+      <g transform="translate(19, 19) scale(1.0)">
+        <g transform="translate(188.7606 -140.88494)"><path d="m-321.47685 347.16187c-3.41142.007-6.17197 2.83988-6.16753 6.32882.004 2.3271.89135 4.46594 2.89751 5.56398l-3.86753 2.6056.14045 1.99822 4.16162-.0187c-.0332 3.63226-1.3183 7.51324-6.91371 10.77079-1.17765 1.05234-3.5325.8346-3.56355 1.86271v4.72289c0 .455.36635.82079.82134.82079h24.86702c.45503 0 .82133-.36579.82133-.82079v-4.72289c-.36493-.92636-2.41658-1.28367-3.56301-1.86271-5.60833-3.26511-6.88674-7.15651-6.91422-10.79602l4.50397-.0203.0159-2.05036-3.99591-2.53042c1.97515-1.10852 2.94606-3.22686 2.94905-5.53106v-.0165c-.009-3.48916-2.78056-6.31095-6.19218-6.30412z" fill="#575452" stroke="#000" stroke-linecap="square" stroke-width="1.5" transform="translate(157.77414 -195.98151)"/><g fill="#464342" fill-rule="evenodd"><path d="m-160.67315 152.87369c1.92797 4.39887.78886 7.45592-1.24597 10.12107 4.44497-.29723 5.17125-8.18356 1.24597-10.12107z"/><path d="m-161.92018 162.99094c-1.04082 14.20907.36721 14.85429 10.67302 22.08399l-.0468-4.77076c-9.59141-3.89255-10.1196-8.5036-10.14955-13.37683l4.11597.14031.23383-1.12253z"/></g></g>
+      </g>
+      <text x="44" y="80" fill="#333333" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9" font-weight="800" text-anchor="middle" opacity="0.6">e7</text>
+    </g>
+
+    <!-- ========================================== -->
+    <!-- VERTEX L-TRAJECTORY ARROW                  -->
+    <!-- Start Vertex (4,4) = (176, 264)           -->
+    <!-- Up 2 vertices -> (176, 88)                -->
+    <!-- Right 1 vertex -> Target (5,6) = (264, 88) -->
+    <!-- ========================================== -->
+    <g>
+      <!-- Glowing Animated Dashed L-Path -->
+      <path class="anim-trajectory" d="M 176 264 L 176 88 L 264 88" 
+            fill="none" stroke="#ffb703" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"
+            filter="url(#vNeonGlow)" marker-end="url(#vArrow)" />
+
+      <!-- Start Vertex Indicator Ring -->
+      <circle cx="176" cy="264" r="8" fill="#241e1b" stroke="#ffb703" stroke-width="2.5" />
+      <circle cx="176" cy="264" r="3" fill="#ffb703" />
+
+      <!-- Landing Target Vertex Crosshair -->
+      <circle cx="264" cy="88" r="9" fill="none" stroke="#ff4b5c" stroke-width="2.5" filter="url(#vRedGlow)" />
+      <circle cx="264" cy="88" r="3.5" fill="#ff4b5c" />
+    </g>
+
+    <!-- ========================================== -->
+    <!-- THE MEGA KNIGHT (2x2 Footprint)           -->
+    <!-- Starts at Vertex (4,4) = (176, 264)       -->
+    <!-- Covers squares d4, d5, e4, e5:            -->
+    <!-- x: 88 to 264 (width 176), y: 176 to 352   -->
+    <!-- ========================================== -->
+    
+    <!-- Mega Knight Ground Shadow -->
+    <g class="anim-mk-shadow" transform="translate(88, 176)">
+      <ellipse cx="88" cy="164" rx="66" ry="14" fill="#000000" opacity="0.6" filter="url(#vDropShadow)" />
+    </g>
+
+    <!-- Mega Knight Body Group (Leaps dx = +88, dy = -176) -->
+    <g class="anim-mega-knight" transform="translate(88, 176)">
+      <!-- 2x2 Square Footprint Highlight on Board Surface -->
+      <rect x="0" y="0" width="176" height="176" rx="10" fill="#ff4b5c" fill-opacity="0.12" stroke="#ff4b5c" stroke-width="2" stroke-opacity="0.35" />
+
+      <!-- Scaled Mega Knight Piece (50x50 native viewBox -> scaled by 3.52 = 176px) -->
+      <g transform="translate(0, 0) scale(3.52)">
+        
+  <defs>
+    <!-- 3D Glossy Ruby Body Gradient -->
+    <radialGradient id="mkRuby" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#ff4d6d" />
+      <stop offset="25%" stop-color="#d90429" />
+      <stop offset="65%" stop-color="#800016" />
+      <stop offset="100%" stop-color="#3f000c" />
+    </radialGradient>
+
+    <!-- Glossy Specular Sheen -->
+    <linearGradient id="mkGleam" x1="0%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.85" />
+      <stop offset="40%" stop-color="#ff758f" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#d90429" stop-opacity="0" />
+    </linearGradient>
+
+    <!-- Golden Mane Accent -->
+    <linearGradient id="mkGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff3b0" />
+      <stop offset="45%" stop-color="#f77f00" />
+      <stop offset="100%" stop-color="#9d0208" />
+    </linearGradient>
+
+    <!-- Deep Core Shadow -->
+    <linearGradient id="mkShadow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#240005" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#590d22" stop-opacity="0.4" />
+    </linearGradient>
+
+    <!-- Base Pedestal Gradient -->
+    <radialGradient id="mkBase" cx="50%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#ff4d6d" />
+      <stop offset="45%" stop-color="#b00020" />
+      <stop offset="85%" stop-color="#54000e" />
+      <stop offset="100%" stop-color="#200005" />
+    </radialGradient>
+
+    <!-- Eye Glow Filter -->
+    <filter id="mkEyeGlow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="1.2" result="glow" />
+      <feMerge>
+        <feMergeNode in="glow" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Ambient Base Shadow -->
+    <filter id="mkDropShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1.8" />
+      <feOffset dx="0" dy="2.5" />
+      <feComponentTransfer><feFuncA type="linear" slope="0.75"/></feComponentTransfer>
+      <feMerge>
+        <feMergeNode />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Ambient Ground Shadow -->
+  <ellipse cx="25" cy="45.5" rx="18.5" ry="3.5" fill="#000000" opacity="0.6" filter="url(#mkEyeGlow)" />
+
+  <!-- Master Group with exact Chess.com Neo Knight Geometry -->
+  <g filter="url(#mkDropShadow)" transform="matrix(.96824974 0 0 .96824974 330.00834 -183.36535)">
+    <g transform="translate(.748355 -.374177)">
+
+      <!-- 1. The Head & Neck Body (Exact Chess.com Face & Contour) -->
+      <g transform="matrix(1.084117 0 0 1.084117 27.965887 -17.438385)">
+        <path d="m-327.43212 207.28694-4.3739 4.42164c.0915 2.78308.24097 3.56955 1.5674 5.27488 4.1359-2.68691 1.20222 2.64429 4.67029-.077.20054-2.24145 3.17306-2.68139 5.12089-3.63471 7.94975 2.3048.66824 2.52746-3.24438 8.93733-1.12218 1.76912-1.05026 3.88601-1.29949 5.91276l19.55756-.13002v-1.23454l-.71474-1.49442c-1.2489-3.63277.32554-8.49484.15828-14.92228-1.80786-6.26199-4.28669-9.71933-10.41992-9.40673.17372-1.85927-.0103-7.37521-4.35439-1.2228-.6845 4.78941-5.91326.91212-6.66762 7.57584z" 
+              fill="url(#mkRuby)" stroke="#260006" stroke-width="1.3" />
+
+        <!-- Specular Highlight along Snout and Brow -->
+        <path d="m-327.43212 207.28694-3.5 3.5 c 0.5 0.5, 2.5 -1.2, 4 -1 c 1.5 0.2, 2.5 1.5, 4 1 c 2 -0.8, 3.5 -2.5, 4.5 -4.5 c -3 -0.5, -6.5 0.2, -9 1z" 
+              fill="url(#mkGleam)" opacity="0.8" />
+
+        <!-- Fiery Golden Intelligent Eye -->
+        <path d="m-321.42982 206.20344c-.40342.63291-2.37309.32339-2.3825-.008-.0413-1.33683 2.88117-1.54992 2.90076-1.29477" 
+              fill="#ffe066" filter="url(#mkEyeGlow)" stroke="#fff" stroke-width="0.3" />
+      </g>
+
+      <!-- 2. Pedestal Base -->
+      <path d="m-325.49479 229.18739c-1.32253 0-2.38723.80903-2.38723 1.81396.001 1.80313-.00028 3.70465 0 5.35334h28.19343c-.0001-1.97368 0-3.49579 0-5.35334 0-1.00493-1.06472-1.81396-2.38723-1.81396z" 
+            fill="url(#mkBase)" stroke="#260006" stroke-linecap="square" stroke-width="1.25" />
+
+      <!-- Gold Trim on Base Lip -->
+      <path d="m-325.49479 229.18739 h23.41897 v 1.2 h -23.41897 z" fill="url(#mkGold)" opacity="0.9" />
+
+      <!-- 3. Mouth Slit (Exact Chess.com feature) -->
+      <path d="m-329.26454 213.05813c.5563.10473 1.40256-1.13834 1.22498-1.3147-.71394-.71263-2.33937.78481-2.20915.92726" 
+            fill="#260006" />
+
+      <!-- 4. Jaw Crease Line (Exact Chess.com feature) -->
+      <path d="m-327.68389 216.9422c.40748-.6395.7247-1.31777 1.62551-1.74538" 
+            fill="none" stroke="#260006" stroke-width="1.3" />
+    </g>
+
+    <!-- 5. Mane Shading & Golden Accents (Matching exact Chess.com mane silhouette) -->
+    <g fill-rule="evenodd">
+      <!-- Deep Mane Shadow -->
+      <path d="m-314.92031 200.82395c12.84569 9.7014 8.31787 13.64505 2.77813 27.41745l9.07851.00005-.74413-1.88516c-.99535-3.76757.22946-10.75706.17104-15.87638-1.95249-8.16122-6.21829-10.61512-11.40048-9.72607z" 
+            fill="url(#mkShadow)" />
+      <!-- Golden Mane Ridge Highlights -->
+      <path d="m-315.94599 196.42814c.42725 1.52104.7417 2.83382.91205 4.31473.46215-1.65516-.0641-5.26851-.91205-4.31473z" 
+            fill="url(#mkGold)" />
+      <!-- Mane Spine Gleam -->
+      <path d="m-306.5 212 c -0.8 5, 0.5 10, 0.2 15 l 2.8 -0.1 c 0.2 -5, -0.6 -10, -0.3 -15 z" 
+            fill="url(#mkGold)" opacity="0.75" />
+    </g>
+  </g>
+
+      </g>
+    </g>
+
+    <!-- ========================================== -->
+    <!-- SEISMIC SHOCKWAVE BURST ON IMPACT          -->
+    <!-- Centered at target vertex (5,6) = (264, 88)-->
+    <!-- ========================================== -->
+    <circle class="shockwave-ring-1" cx="264" cy="88" r="70" fill="none" stroke="#ff4b5c" opacity="0" filter="url(#vRedGlow)" />
+    <circle class="shockwave-ring-2" cx="264" cy="88" r="70" fill="none" stroke="#ffb703" opacity="0" filter="url(#vNeonGlow)" />
+
+    <!-- ========================================== -->
+    <!-- ACTION SPLASH TEXT: "💥 CRUSHED!"          -->
+    <!-- ========================================== -->
+    <g class="anim-splash" transform="translate(264, 88)">
+      <!-- Backdrop Pill -->
+      <rect x="-92" y="-22" width="184" height="44" rx="22" fill="#1b0005" stroke="#ff4b5c" stroke-width="2.5" filter="url(#vRedGlow)" />
+      
+      <text x="0" y="6" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="900" text-anchor="middle" letter-spacing="1">
+        💥 CRUSHED!
+      </text>
+      <text x="0" y="24" fill="#ffb703" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="800" text-anchor="middle" letter-spacing="0.5">
+        -2 PIECES REMOVED
+      </text>
+    </g>
+
+  </g>
+
+  <!-- ========================================== -->
+  <!-- BOTTOM STATUS FOOTER BAR                   -->
+  <!-- ========================================== -->
+  <g transform="translate(24, 498)">
+    <rect x="0" y="0" width="912" height="28" rx="6" fill="#141110" stroke="#2d2723" stroke-width="1" />
+    <text x="14" y="18" fill="#88817a" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="600">
+      ⚡ <tspan fill="#ffb703">MEGA-KNIGHT VARIANT RULES:</tspan> Move standard chess pieces OR roll D6 • Roll 6 commands the 2×2 Mega Knight • All landing squares obliterated!
+    </text>
+    <text x="898" y="18" fill="#81b64c" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700" text-anchor="end">
+      PLAY NOW ON GITHUB PAGES ➔
+    </text>
+  </g>
+
+</svg>
